@@ -104,7 +104,7 @@ escape_value () {
     printf '%s' "$1" | awk '
     {
         gsub(/"/,"\\\"")
-        gsub(/\\n/,"\\\\n")
+        #gsub(/\\n/,"\\\\n")
     }
     NR == 1 {
         value_line = $0
@@ -114,8 +114,6 @@ escape_value () {
     }
     END {
         printf "%s", value_line
-        printf "value inside awk" > /dev/stderr
-        printf "%s", value_line > /dev/stderr
     }'
 }
 
