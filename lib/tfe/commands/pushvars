@@ -99,6 +99,8 @@ EOF
 # Replace quotes and newlines with escape characters to prepare the
 # value for insertion into JSON.
 escape_value () {
+    echodebug "value entering escape_value"
+    echodebug "$1"
     printf '%s' "$1" | awk '
     {
         gsub(/"/,"\\\"")
@@ -112,6 +114,8 @@ escape_value () {
     }
     END {
         printf "%s", value_line
+        printf "value inside awk" > /dev/stderr
+        printf "%s", value_line > /dev/stderr
     }'
 }
 
@@ -176,7 +180,7 @@ process_vars () {
     fi
 
     echodebug "entering process_vars. value list:"
-    echodeubg "$2"
+    echodebug "$2"
 
     # Loop through the given variables. See if they are already in the
     # workspace. If so create them, else update them if they should be
