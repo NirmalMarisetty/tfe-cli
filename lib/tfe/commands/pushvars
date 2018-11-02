@@ -102,7 +102,6 @@ escape_value () {
     printf '%s' "$1" | awk '
     {
         gsub(/"/,"\\\"")
-        gsub(/\\n/,"\\\\n")
     }
     NR == 1 {
         value_line = $0
