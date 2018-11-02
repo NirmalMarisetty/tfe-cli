@@ -116,6 +116,8 @@ escape_value () {
 }
 
 make_var_create_payload () {
+echodebug "variable in create payload"
+echodebug "$5"
 cat > "$payload" <<EOF
 {
   "data": {
@@ -141,6 +143,8 @@ EOF
 }
 
 make_var_update_payload () {
+echodebug "variable in update payload"
+echodebug "$5"
 cat > "$payload" <<EOF
 {
   "data": {
@@ -171,6 +175,9 @@ process_vars () {
         return
     fi
 
+    echodebug "entering process_vars. value list:"
+    echodeubg "$2"
+
     # Loop through the given variables. See if they are already in the
     # workspace. If so create them, else update them if they should be
     # updated.
@@ -182,6 +189,8 @@ process_vars () {
             | select(.attributes.key == $var)
             | .id')"
         val="$(printf "%s" "$2" | awk -v i=$i 'NR==i{print;exit}')"
+        echodebug "variable value as pulled"
+        echodebug "$val"
         if [ -z "$var_id" ]; then
             if [ "$hide_sensitive" = true ] && [ "$5" = true ]; then
                 output_val=REDACTED
@@ -346,11 +355,17 @@ tfe_pushvars () (
                 shclvars_values="$(append "$shclvars_values" "$new_var_value")"
                 ;;
             -env-var)
+                echodebug "variable name"
+                echodebug "$1"
+                echodebug "variable value before escape"
+                echodebug "$2"
                 new_var_arg="$(assign_arg "$1" "$2")"
                 new_var_name=${new_var_arg%%=*}
                 new_var_value="$(escape_value "${new_var_arg#*=}")"
                 envvars="$(append "$envvars" "$new_var_name")"
                 envvars_values="$(append "$envvars_values" "$new_var_value")"
+                echodebug "variable value after escape"
+                echodebug "$new_var_value"
                 ;;
             -senv-var)
                 new_var_arg="$(assign_arg "$1" "$2")"
